@@ -11,12 +11,16 @@ import numpy as np
 import math as math
 from IPython import embed
 
-# for now, assuming f(0,0) = 0, can write in translation step later
-inPolynomial1 = input('Type polynomial 1:')
-inPolynomial2 = input('Type polynomial 2:')
-
 x = Symbol('x')
 y = Symbol('y')
+
+# some built-in assup
+
+# for now, assuming f(0,0) = 0, can write in translation step later
+#inPolynomial1 = input('Type polynomial 1:')
+#inPolynomial2 = input('Type polynomial 2:')
+inPolynomial1 = poly(y+x**21+x**2+y**2+x*y+x*y**2,x,y)
+inPolynomial2 = poly(x+y**27*x+y**2,x,y)
 
 f = poly(inPolynomial1,x,y)
 g = poly(inPolynomial2,x,y)
@@ -24,7 +28,7 @@ g = poly(inPolynomial2,x,y)
 
 sumOrder = 0
 
-while (f(0,0) == 0) & (g(0,0) == 0):
+while (f(0,0) == 0) & (g(0,0) == 0) & (gcd(f,g) != g)  & (gcd(f,g) != f):
     fPrime = sympify(f)
     fPrime = fPrime.subs(y,0)
     fPrime = poly(fPrime,x)
@@ -39,7 +43,8 @@ while (f(0,0) == 0) & (g(0,0) == 0):
         f = g
         gPrime = hold_fPrime
         g = hold_f
-      
+        
+    
     while degree(fPrime) > 0:
         f = poly(f/LC(fPrime),x,y)
         g = poly(g/LC(gPrime),x,y)
@@ -50,20 +55,18 @@ while (f(0,0) == 0) & (g(0,0) == 0):
         hPrime = poly(hPrime,x)
 
         if degree(fPrime) > degree(hPrime):
-            hold_fPrime = fPrime
-            hold_f = f
             fPrime = hPrime
             f = h
-            hPrime = hold_fPrime
-            h = hold_f
         else:
             gPrime = hPrime
             g = h
-        
-    sumOrder += degree(gPrime)
-    f = poly(simplify(f/y),x,y)
-
+            
+        embed()
     
+    if f != 0:
+        sumOrder += degree(gPrime)
+        f = poly(simplify(f/y),x,y)
+        
 print('The intersection number of your polynomials at 0 is: \n', sumOrder)
 
         
